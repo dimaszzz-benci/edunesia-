@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduNesia - Belajar Bahasa Inggris</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+  <header>
+    <h1>🎓 EduNesia</h1>
+    <p>Belajar Bahasa Inggris Seru & Interaktif</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Mulai Belajar</h2>
+
+      <!-- Pilih Jenjang -->
+      <div class="form-group">
+        <label>Jenjang</label>
+        <div class="btn-group" id="jenjangGroup">
+          <button onclick="pilihJenjang('SD')">SD</button>
+          <button onclick="pilihJenjang('SMP')">SMP</button>
+          <button onclick="pilihJenjang('SMA')">SMA</button>
+          <button onclick="pilihJenjang('SMK')">SMK</button>
+        </div>
+      </div>
+
+      <!-- Pilih Kelas -->
+      <div class="form-group" id="kelasSection" style="display:none">
+        <label>Kelas</label>
+        <div class="btn-group" id="kelasGroup"></div>
+      </div>
+
+      <!-- Pilih Level -->
+      <div class="form-group" id="levelSection" style="display:none">
+        <label>Level</label>
+        <div class="btn-group" id="levelGroup">
+          <button onclick="pilihLevel(1)">⭐ Level 1</button>
+          <button onclick="pilihLevel(2)">⭐⭐ Level 2</button>
+          <button onclick="pilihLevel(3)">⭐⭐⭐ Level 3</button>
+          <button onclick="pilihLevel(4)">⭐⭐⭐⭐ Level 4</button>
+          <button onclick="pilihLevel(5)">⭐⭐⭐⭐⭐ Level 5</button>
+        </div>
+      </div>
+
+      <!-- Tombol Mulai -->
+      <div id="mulaiSection" style="display:none">
+        <button class="btn-mulai" onclick="mulaiQuiz()">🚀 Mulai Quiz!</button>
+      </div>
+
+    </section>
+
+    <!-- Info XP & Streak -->
+    <section class="card stats">
+      <div>🔥 Streak: <strong id="streakCount">0</strong> hari</div>
+      <div>⚡ XP: <strong id="xpCount">0</strong></div>
+    </section>
+
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
