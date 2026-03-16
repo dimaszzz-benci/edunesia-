@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduNesia - Quiz</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+
+  <header>
+    <h1>🎓 EduNesia</h1>
+    <div class="quiz-info">
+      <span id="infoJenjang">-</span>
+      <span id="infoKelas">-</span>
+      <span id="infoLevel">-</span>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="card stats">
+      <div>🔥 Streak: <strong id="streakCount">0</strong></div>
+      <div>⚡ XP: <strong id="xpCount">0</strong></div>
+      <div>✅ Soal: <strong id="soalCount">0/10</strong></div>
+    </section>
+
+    <section class="card" id="quizCard">
+
+      <div id="loadingState">
+        <div class="loading-spinner"></div>
+        <p>Generating soal...</p>
+      </div>
+
+      <div id="soalState" style="display:none">
+        <p class="soal-nomor" id="soalNomor">Soal 1</p>
+        <p class="soal-text" id="soalText"></p>
+        <div class="pilihan-group" id="pilihanGroup"></div>
+        <div id="feedbackBox" style="display:none"></div>
+        <button class="btn-mulai" id="btnNext" style="display:none" onclick="nextSoal()">
+          Soal Berikutnya →
+        </button>
+      </div>
+
+      <div id="selesaiState" style="display:none">
+        <div style="text-align:center; padding: 20px 0">
+          <p style="font-size:2rem">🎉</p>
+          <h2 style="color:#3ecf8e; margin: 10px 0">Quiz Selesai!</h2>
+          <p id="skorAkhir" style="font-size:1.1rem; margin-bottom: 20px"></p>
+          <button class="btn-mulai" onclick="window.location.href='../index.html'">
+            🏠 Kembali ke Menu
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="../js/quiz.js"></script>
+</body>
+</html>
