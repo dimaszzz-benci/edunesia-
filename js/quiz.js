@@ -14,40 +14,45 @@ const level = localStorage.getItem('level');
 // INIT
 // =====================
 function init() {
-  document.getElementById('infoJenjang').textContent = jenjang;
-  document.getElementById('infoKelas').textContent = 'Kelas ' + kelas;
-  document.getElementById('infoLevel').textContent = 'Level ' + level;
+  if (!jenjang || !kelas || !level) {
+    window.location.href = '../index.html';
+    return;
+  }
 
   document.getElementById('xpCount').textContent = localStorage.getItem('xp') || 0;
   document.getElementById('streakCount').textContent = localStorage.getItem('streak') || 0;
 
+  updateProgress();
   generateSoal();
 }
 
 // =====================
-// GENERATE SOAL (Claude API)
+// PROGRESS BAR
+// =====================
+function updateProgress() {
+  const persen = ((soalSekarang - 1) / totalSoal) * 100;
+  document.getElementById('progressBar').style.width = persen + '%';
+  document.getElementById('quizLabel').textContent =
+    `${jenjang} - Kelas ${kelas} - Level ${level} - Soal ${soalSekarang}/${totalSoal}`;
+}
+
+// =====================
+// GENERATE SOAL
 // =====================
 async function generateSoal() {
-  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('loadingState').style.display = 'flex';
   document.getElementById('soalState').style.display = 'none';
+  document.getElementById('selesaiState').style.display = 'none';
 
-  const prompt = `
-Buatkan 1 soal pilihan ganda Bahasa Inggris untuk siswa ${jenjang} kelas ${kelas} level ${level}/5.
-Soal harus sesuai tingkat kesulitan level tersebut.
+  const prompt = `Buatkan 1 soal pilihan ganda Bahasa Inggris untuk siswa ${jenjang} kelas ${kelas} level ${level}/5. Sesuaikan kesulitan dengan level tersebut.
 
-Balas HANYA dengan format JSON ini, tanpa teks lain:
+Balas HANYA dengan JSON ini tanpa teks lain:
 {
-  "soal": "pertanyaan di sini",
-  "pilihan": {
-    "A": "pilihan A",
-    "B": "pilihan B",
-    "C": "pilihan C",
-    "D": "pilihan D"
-  },
+  "soal": "pertanyaan",
+  "pilihan": {"A": "...", "B": "...", "C": "...", "D": "..."},
   "jawaban": "A",
-  "penjelasan": "kenapa jawabannya itu"
-}
-`;
+  "penjelasan": "penjelasan singkat"
+}`;
 
   try {
     const response = await fetch('/api/chat', {
@@ -57,17 +62,18 @@ Balas HANYA dengan format JSON ini, tanpa teks lain:
     });
 
     const data = await response.json();
-    const text = data.result;
-
-    const clean = text.replace(/```json|```/g, '').trim();
+    const clean = data.result.replace(/```json|```/g, '').trim();
     soalData = JSON.parse(clean);
-
     tampilkanSoal();
 
   } catch (err) {
-    console.error(err);
-    document.getElementById('loadingState').innerHTML =
-      '<p style="color:#ff6b6b">❌ Gagal load soal. Cek koneksi internet.</p>';
+    document.getElementById('loadingState').innerHTML = `
+      <div style="text-align:center; color:#ff4b4b; padding: 40px 20px">
+        <div style="font-size:2rem; margin-bottom:12px">&#9888;</div>
+        <div style="font-weight:700; margin-bottom:8px">Gagal memuat soal</div>
+        <div style="font-size:0.85rem; color:#afafaf; margin-bottom:20px">Cek koneksi internet kamu</div>
+        <button onclick="generateSoal()" style="background:#58cc02; color:white; border:none; padding:12px 24px; border-radius:12px; font-weight:700; cursor:pointer">Coba Lagi</button>
+      </div>`;
   }
 }
 
@@ -80,39 +86,39 @@ function tampilkanSoal() {
   document.getElementById('feedbackBox').style.display = 'none';
   document.getElementById('btnNext').style.display = 'none';
 
-  document.getElementById('soalNomor').textContent = `Soal ${soalSekarang} dari ${totalSoal}`;
   document.getElementById('soalText').textContent = soalData.soal;
-  document.getElementById('soalCount').textContent = `${soalSekarang}/${totalSoal}`;
 
   const group = document.getElementById('pilihanGroup');
   group.innerHTML = '';
 
   Object.entries(soalData.pilihan).forEach(([key, value]) => {
     const btn = document.createElement('button');
-    btn.textContent = `${key}. ${value}`;
+    btn.className = 'pilihan-btn';
+    btn.innerHTML = `<span class="pilihan-key">${key}</span>${value}`;
     btn.onclick = () => jawab(key, btn);
     group.appendChild(btn);
   });
 }
 
 // =====================
-// JAWAB SOAL
+// JAWAB
 // =====================
 function jawab(pilihan, btnEl) {
-  document.querySelectorAll('#pilihanGroup button').forEach(btn => {
+  document.querySelectorAll('.pilihan-btn').forEach(btn => {
     btn.disabled = true;
   });
 
   const benar = pilihan === soalData.jawaban;
   const feedbackBox = document.getElementById('feedbackBox');
+  const feedbackTitle = document.getElementById('feedbackTitle');
+  const feedbackText = document.getElementById('feedbackText');
 
   if (benar) {
     skorBenar++;
-    btnEl.style.background = '#3ecf8e';
-    btnEl.style.borderColor = '#3ecf8e';
-    feedbackBox.style.background = '#0d3d2a';
-    feedbackBox.style.borderColor = '#3ecf8e';
-    feedbackBox.innerHTML = `✅ <strong>Benar!</strong><br>${soalData.penjelasan}`;
+    btnEl.classList.add('benar');
+    feedbackBox.className = 'feedback-box benar';
+    feedbackTitle.textContent = 'Benar!';
+    feedbackText.textContent = soalData.penjelasan;
 
     let xp = parseInt(localStorage.getItem('xp')) || 0;
     xp += 10;
@@ -120,16 +126,14 @@ function jawab(pilihan, btnEl) {
     document.getElementById('xpCount').textContent = xp;
 
   } else {
-    btnEl.style.background = '#ff6b6b';
-    btnEl.style.borderColor = '#ff6b6b';
-    feedbackBox.style.background = '#3d0d0d';
-    feedbackBox.style.borderColor = '#ff6b6b';
-    feedbackBox.innerHTML = `❌ <strong>Salah!</strong> Jawaban benar: <strong>${soalData.jawaban}</strong><br>${soalData.penjelasan}`;
+    btnEl.classList.add('salah');
+    feedbackBox.className = 'feedback-box salah';
+    feedbackTitle.textContent = 'Kurang tepat!';
+    feedbackText.textContent = `Jawaban benar: ${soalData.jawaban}. ${soalData.penjelasan}`;
 
-    document.querySelectorAll('#pilihanGroup button').forEach(btn => {
-      if (btn.textContent.startsWith(soalData.jawaban)) {
-        btn.style.background = '#3ecf8e';
-        btn.style.borderColor = '#3ecf8e';
+    document.querySelectorAll('.pilihan-btn').forEach(btn => {
+      if (btn.querySelector('.pilihan-key').textContent === soalData.jawaban) {
+        btn.classList.add('benar');
       }
     });
   }
@@ -146,8 +150,8 @@ function nextSoal() {
     selesai();
     return;
   }
-
   soalSekarang++;
+  updateProgress();
   generateSoal();
 }
 
@@ -156,11 +160,13 @@ function nextSoal() {
 // =====================
 function selesai() {
   document.getElementById('soalState').style.display = 'none';
+  document.getElementById('loadingState').style.display = 'none';
   document.getElementById('selesaiState').style.display = 'block';
 
-  const persentase = Math.round((skorBenar / totalSoal) * 100);
+  const persen = Math.round((skorBenar / totalSoal) * 100);
+  document.getElementById('progressBar').style.width = '100%';
   document.getElementById('skorAkhir').textContent =
-    `Skor: ${skorBenar}/${totalSoal} (${persentase}%) — XP didapat: ${skorBenar * 10}`;
+    `Skor ${skorBenar}/${totalSoal} (${persen}%) - XP didapat: +${skorBenar * 10}`;
 }
 
 // =====================
