@@ -152,7 +152,44 @@ function nextSoal() {
   }
   soalSekarang++;
   updateProgress();
-  generateSoal();
+  generateSoal();try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+
+    if (!response.ok) {
+      throw new Error('Response error: ' + response.status);
+    }
+
+    const data = await response.json();
+
+    if (!data.result) {
+      throw new Error('Tidak ada result dari API');
+    }
+
+    // Coba parse JSON
+    let clean = data.result;
+    // Hapus markdown code block kalau ada
+    clean = clean.replace(/```json/g, '').replace(/```/g, '').trim();
+    // Ambil bagian JSON aja
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Format JSON tidak ditemukan');
+
+    soalData = JSON.parse(jsonMatch[0]);
+    tampilkanSoal();
+
+  } catch (err) {
+    console.error('Error:', err);
+    document.getElementById('loadingState').innerHTML = `
+      <div style="text-align:center; color:#ff4b4b; padding: 40px 20px">
+        <div style="font-size:2rem; margin-bottom:12px">&#9888;</div>
+        <div style="font-weight:700; margin-bottom:8px">Gagal memuat soal</div>
+        <div style="font-size:0.85rem; color:#afafaf; margin-bottom:20px">${err.message}</div>
+        <button onclick="generateSoal()" style="background:#58cc02; color:white; border:none; padding:12px 24px; border-radius:12px; font-weight:700; cursor:pointer">Coba Lagi</button>
+      </div>`;
+  }
 }
 
 // =====================
