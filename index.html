@@ -1,65 +1,137 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EduNesia - Belajar Bahasa Inggris</title>
+  <title>EduNesia</title>
   <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
 
-  <header>
-    <h1>🎓 EduNesia</h1>
-    <p>Belajar Bahasa Inggris Seru & Interaktif</p>
-  </header>
+  <div class="app">
 
-  <main>
-    <section class="card">
-      <h2>Mulai Belajar</h2>
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <div class="logo-icon">E</div>
+          <span class="logo-text">EduNesia</span>
+        </div>
+        <div class="header-stats">
+          <div class="stat-pill">
+            <span class="stat-icon fire">&#128293;</span>
+            <span id="streakCount">0</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-icon bolt">&#9889;</span>
+            <span id="xpCount">0</span>
+          </div>
+        </div>
+      </div>
+    </header>
 
-      <!-- Pilih Jenjang -->
-      <div class="form-group">
-        <label>Jenjang</label>
-        <div class="btn-group" id="jenjangGroup">
-          <button onclick="pilihJenjang('SD')">SD</button>
-          <button onclick="pilihJenjang('SMP')">SMP</button>
-          <button onclick="pilihJenjang('SMA')">SMA</button>
-          <button onclick="pilihJenjang('SMK')">SMK</button>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Belajar Bahasa Inggris</h1>
+        <p>Seru, cepat, dan efektif setiap hari</p>
+      </div>
+    </section>
+
+    <!-- CARD PILIHAN -->
+    <main class="main">
+
+      <!-- JENJANG -->
+      <div class="section-label">Pilih Jenjang</div>
+      <div class="grid-2" id="jenjangGroup">
+        <button class="choice-btn" onclick="pilihJenjang('SD')">
+          <span class="choice-emoji">&#128218;</span>
+          <span>SD</span>
+        </button>
+        <button class="choice-btn" onclick="pilihJenjang('SMP')">
+          <span class="choice-emoji">&#128214;</span>
+          <span>SMP</span>
+        </button>
+        <button class="choice-btn" onclick="pilihJenjang('SMA')">
+          <span class="choice-emoji">&#127979;</span>
+          <span>SMA</span>
+        </button>
+        <button class="choice-btn" onclick="pilihJenjang('SMK')">
+          <span class="choice-emoji">&#128295;</span>
+          <span>SMK</span>
+        </button>
+      </div>
+
+      <!-- KELAS -->
+      <div id="kelasSection" class="hidden">
+        <div class="section-label">Pilih Kelas</div>
+        <div class="grid-3" id="kelasGroup"></div>
+      </div>
+
+      <!-- LEVEL -->
+      <div id="levelSection" class="hidden">
+        <div class="section-label">Pilih Level</div>
+        <div class="level-list" id="levelGroup">
+          <button class="level-btn" onclick="pilihLevel(1)">
+            <div class="level-left">
+              <div class="level-badge l1">1</div>
+              <div>
+                <div class="level-name">Pemula</div>
+                <div class="level-desc">Kosakata dasar</div>
+              </div>
+            </div>
+            <div class="level-arrow">›</div>
+          </button>
+          <button class="level-btn" onclick="pilihLevel(2)">
+            <div class="level-left">
+              <div class="level-badge l2">2</div>
+              <div>
+                <div class="level-name">Dasar</div>
+                <div class="level-desc">Kalimat sederhana</div>
+              </div>
+            </div>
+            <div class="level-arrow">›</div>
+          </button>
+          <button class="level-btn" onclick="pilihLevel(3)">
+            <div class="level-left">
+              <div class="level-badge l3">3</div>
+              <div>
+                <div class="level-name">Menengah</div>
+                <div class="level-desc">Grammar & percakapan</div>
+              </div>
+            </div>
+            <div class="level-arrow">›</div>
+          </button>
+          <button class="level-btn" onclick="pilihLevel(4)">
+            <div class="level-left">
+              <div class="level-badge l4">4</div>
+              <div>
+                <div class="level-name">Mahir</div>
+                <div class="level-desc">Teks kompleks</div>
+              </div>
+            </div>
+            <div class="level-arrow">›</div>
+          </button>
+          <button class="level-btn" onclick="pilihLevel(5)">
+            <div class="level-left">
+              <div class="level-badge l5">5</div>
+              <div>
+                <div class="level-name">Expert</div>
+                <div class="level-desc">Tingkat lanjut</div>
+              </div>
+            </div>
+            <div class="level-arrow">›</div>
+          </button>
         </div>
       </div>
 
-      <!-- Pilih Kelas -->
-      <div class="form-group" id="kelasSection" style="display:none">
-        <label>Kelas</label>
-        <div class="btn-group" id="kelasGroup"></div>
+      <!-- TOMBOL MULAI -->
+      <div id="mulaiSection" class="hidden">
+        <button class="btn-start" onclick="mulaiQuiz()">Mulai Belajar</button>
       </div>
 
-      <!-- Pilih Level -->
-      <div class="form-group" id="levelSection" style="display:none">
-        <label>Level</label>
-        <div class="btn-group" id="levelGroup">
-          <button onclick="pilihLevel(1)">⭐ Level 1</button>
-          <button onclick="pilihLevel(2)">⭐⭐ Level 2</button>
-          <button onclick="pilihLevel(3)">⭐⭐⭐ Level 3</button>
-          <button onclick="pilihLevel(4)">⭐⭐⭐⭐ Level 4</button>
-          <button onclick="pilihLevel(5)">⭐⭐⭐⭐⭐ Level 5</button>
-        </div>
-      </div>
-
-      <!-- Tombol Mulai -->
-      <div id="mulaiSection" style="display:none">
-        <button class="btn-mulai" onclick="mulaiQuiz()">🚀 Mulai Quiz!</button>
-      </div>
-
-    </section>
-
-    <!-- Info XP & Streak -->
-    <section class="card stats">
-      <div>🔥 Streak: <strong id="streakCount">0</strong> hari</div>
-      <div>⚡ XP: <strong id="xpCount">0</strong></div>
-    </section>
-
-  </main>
+    </main>
+  </div>
 
   <script src="js/main.js"></script>
 </body>
