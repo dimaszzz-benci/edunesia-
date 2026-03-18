@@ -1,62 +1,536 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EduNesia - Quiz</title>
-  <link rel="stylesheet" href="../css/style.css"/>
-</head>
-<body>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
-  <header>
-    <h1>🎓 EduNesia</h1>
-    <div class="quiz-info">
-      <span id="infoJenjang">-</span>
-      <span id="infoKelas">-</span>
-      <span id="infoLevel">-</span>
-    </div>
-  </header>
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f7f7f7;
+  color: #3c3c3c;
+  min-height: 100vh;
+}
 
-  <main>
+/* APP */
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #ffffff;
+}
 
-    <section class="card stats">
-      <div>🔥 Streak: <strong id="streakCount">0</strong></div>
-      <div>⚡ XP: <strong id="xpCount">0</strong></div>
-      <div>✅ Soal: <strong id="soalCount">0/10</strong></div>
-    </section>
+/* HEADER */
+.header {
+  background: #ffffff;
+  border-bottom: 2px solid #e5e5e5;
+  padding: 14px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
 
-    <section class="card" id="quizCard">
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-      <div id="loadingState">
-        <div class="loading-spinner"></div>
-        <p>Generating soal...</p>
-      </div>
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-      <div id="soalState" style="display:none">
-        <p class="soal-nomor" id="soalNomor">Soal 1</p>
-        <p class="soal-text" id="soalText"></p>
-        <div class="pilihan-group" id="pilihanGroup"></div>
-        <div id="feedbackBox" style="display:none"></div>
-        <button class="btn-mulai" id="btnNext" style="display:none" onclick="nextSoal()">
-          Soal Berikutnya →
-        </button>
-      </div>
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: #58cc02;
+  color: white;
+  font-weight: 900;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-      <div id="selesaiState" style="display:none">
-        <div style="text-align:center; padding: 20px 0">
-          <p style="font-size:2rem">🎉</p>
-          <h2 style="color:#3ecf8e; margin: 10px 0">Quiz Selesai!</h2>
-          <p id="skorAkhir" style="font-size:1.1rem; margin-bottom: 20px"></p>
-          <button class="btn-mulai" onclick="window.location.href='../index.html'">
-            🏠 Kembali ke Menu
-          </button>
-        </div>
-      </div>
+.logo-text {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #58cc02;
+}
 
-    </section>
+.header-stats {
+  display: flex;
+  gap: 12px;
+}
 
-  </main>
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #3c3c3c;
+}
 
-  <script src="../js/quiz.js"></script>
-</body>
-</html>
+.stat-icon.fire { color: #ff9600; }
+.stat-icon.bolt { color: #58cc02; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #58cc02, #1cb0f6);
+  padding: 32px 24px;
+  color: white;
+}
+
+.hero h1 {
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.hero p {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* MAIN */
+.main {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* SECTION LABEL */
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #afafaf;
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+/* GRID */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* CHOICE BUTTON */
+.choice-btn {
+  background: #ffffff;
+  border: 2px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 18px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #3c3c3c;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 2px 0 #e5e5e5;
+}
+
+.choice-btn:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.choice-btn.active {
+  border-color: #58cc02;
+  background: #f0fff0;
+  color: #58cc02;
+  box-shadow: 0 2px 0 #58cc02;
+}
+
+.choice-emoji {
+  font-size: 1.6rem;
+}
+
+/* LEVEL LIST */
+.level-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.level-btn {
+  background: #ffffff;
+  border: 2px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 2px 0 #e5e5e5;
+}
+
+.level-btn:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.level-btn.active {
+  border-color: #58cc02;
+  background: #f0fff0;
+  box-shadow: 0 2px 0 #58cc02;
+}
+
+.level-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.level-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1rem;
+  color: white;
+}
+
+.l1 { background: #58cc02; }
+.l2 { background: #1cb0f6; }
+.l3 { background: #ff9600; }
+.l4 { background: #ff4b4b; }
+.l5 { background: #ce82ff; }
+
+.level-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #3c3c3c;
+  text-align: left;
+}
+
+.level-desc {
+  font-size: 0.8rem;
+  color: #afafaf;
+  text-align: left;
+}
+
+.level-arrow {
+  font-size: 1.4rem;
+  color: #afafaf;
+}
+
+/* TOMBOL MULAI */
+.btn-start {
+  width: 100%;
+  padding: 16px;
+  background: #58cc02;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #46a302;
+  transition: all 0.15s;
+  margin-top: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-start:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+/* HIDDEN */
+.hidden {
+  display: none;
+}
+
+/* ========================
+   QUIZ PAGE
+======================== */
+
+.quiz-header {
+  background: #ffffff;
+  border-bottom: 2px solid #e5e5e5;
+  padding: 14px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.quiz-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #afafaf;
+  padding: 0;
+  line-height: 1;
+}
+
+.progress-bar-wrap {
+  flex: 1;
+  height: 10px;
+  background: #e5e5e5;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #58cc02;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+.quiz-stats {
+  display: flex;
+  gap: 12px;
+}
+
+.quiz-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* QUIZ MAIN */
+.quiz-main {
+  padding: 24px 20px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.quiz-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #afafaf;
+  margin-bottom: 16px;
+}
+
+.soal-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #3c3c3c;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* PILIHAN */
+.pilihan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.pilihan-btn {
+  background: #ffffff;
+  border: 2px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 16px;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #3c3c3c;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 2px 0 #e5e5e5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pilihan-btn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.pilihan-btn:hover:not(:disabled) {
+  border-color: #1cb0f6;
+  background: #f0f9ff;
+}
+
+.pilihan-btn:disabled {
+  cursor: not-allowed;
+}
+
+.pilihan-btn.benar {
+  border-color: #58cc02;
+  background: #f0fff0;
+  box-shadow: 0 2px 0 #46a302;
+  color: #46a302;
+}
+
+.pilihan-btn.salah {
+  border-color: #ff4b4b;
+  background: #fff0f0;
+  box-shadow: 0 2px 0 #cc0000;
+  color: #ff4b4b;
+}
+
+.pilihan-key {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* FEEDBACK */
+.feedback-box {
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.feedback-box.benar {
+  background: #f0fff0;
+  border: 2px solid #58cc02;
+}
+
+.feedback-box.salah {
+  background: #fff0f0;
+  border: 2px solid #ff4b4b;
+}
+
+.feedback-title {
+  font-weight: 800;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.feedback-box.benar .feedback-title { color: #46a302; }
+.feedback-box.salah .feedback-title { color: #ff4b4b; }
+
+.feedback-text {
+  font-size: 0.9rem;
+  color: #3c3c3c;
+  line-height: 1.5;
+}
+
+/* BTN NEXT */
+.btn-next {
+  width: 100%;
+  padding: 16px;
+  background: #58cc02;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #46a302;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: none;
+}
+
+.btn-next:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+/* LOADING */
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 0;
+  gap: 16px;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid #e5e5e5;
+  border-top-color: #58cc02;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 0.9rem;
+  color: #afafaf;
+  font-weight: 600;
+}
+
+/* SELESAI */
+.selesai-wrap {
+  text-align: center;
+  padding: 40px 20px;
+  display: none;
+}
+
+.selesai-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.selesai-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #58cc02;
+  margin-bottom: 8px;
+}
+
+.selesai-skor {
+  font-size: 1rem;
+  color: #afafaf;
+  margin-bottom: 32px;
+}
+
+.btn-home {
+  width: 100%;
+  padding: 16px;
+  background: #58cc02;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #46a302;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
